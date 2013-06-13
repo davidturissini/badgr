@@ -22,15 +22,26 @@ var Users = [];
 		});
 
 
+		app.get('/users/:id', function (req, res) {
+			var user = Users[req.params.id - 1];
+
+			res.writeHead(200, { 'Content-Type': 'application/json' });
+			res.write(JSON.stringify(user));
+			res.end();
+		});
+
+
 		app.post('/users', function (req, res) {
+			var userId = Users.length + 1;
 			var user = {
-				name:req.body.name
+				name:req.body.name,
+				id:userId
 			};
 
 			Users.push(user);
 
 			res.writeHead(200, { 'Content-Type': 'application/json' });
-			res.write(JSON.stringify(req.body));
+			res.write(JSON.stringify(user));
 			res.end()
 		});
 
