@@ -1,0 +1,15 @@
+{
+  "name": "Badgr",
+  "description": "Accomplishments app",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.0.6",
+    "q": "0.8.12",
+    "promised-io": "0.3.3"
+  },
+  "engines": {
+    "node": "0.8.2",
+    "npm": "1.1.36"
+  }
+}
