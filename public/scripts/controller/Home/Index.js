@@ -4,15 +4,27 @@ define(
 	[
 		'jQuery',
 		'cookies',
+		'backbone',
 		'models/User',
-		'controller/User/Show'
+		'router/User'
 	],
 
-	function (jQuery, cookies, User, ControllerUserShow) {
+	function (jQuery, cookies, Backbone, User, RouterUser) {
 		var IndexController;
+		var routerUser = new RouterUser();
+		
+		Backbone.history.start({
+			pushState:true
+		});
 
 
 		IndexController = function () {};
+
+
+		function goToUserShow(user, indexController) {
+			indexController.deactivate();
+			routerUser.navigate('users/' + user.id, {trigger:true});
+		}
 
 
 		IndexController.prototype = {
@@ -49,9 +61,7 @@ define(
 							.then(function () {
 								cookies.set('user_id', user.id);
 
-								var controllerUserShow = new ControllerUserShow(user);
-								indexController.deactivate();
-								controllerUserShow.activate();
+								goToUserShow(user, indexController);
 
 							});
 
@@ -63,9 +73,7 @@ define(
 						user.fetch()
 
 						.then(function () {
-							var controllerUserShow = new ControllerUserShow(user);
-							indexController.deactivate();
-							controllerUserShow.activate();
+							goToUserShow(user, indexController);
 						});
 
 						
