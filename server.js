@@ -1,3 +1,5 @@
+var Users = [];
+
 (function () {
 	var express = require('express'), q = require('q');
 
@@ -12,17 +14,24 @@
 		  	app.use(express.bodyParser());
 		});
 
-		app.get('/', function (req, res) {
-			var config = {
-				soundcloud: {
-					client_id: Levels.config.soundcloud.client_id
-				}
-			};
-
+		app.get('/users', function (req, res) {
 			res.writeHead(200, { 'Content-Type': 'application/json' });
-			res.write(JSON.stringify(config));
+			res.write(JSON.stringify(Users));
 			res.end();
 
+		});
+
+
+		app.post('/users', function (req, res) {
+			var user = {
+				name:req.body.name
+			};
+
+			Users.push(user);
+
+			res.writeHead(200, { 'Content-Type': 'application/json' });
+			res.write(JSON.stringify(req.body));
+			res.end()
 		});
 
 
