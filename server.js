@@ -1,7 +1,20 @@
-var Users = [];
+var Users = {};
+
+function NumUsers () {
+	var count = 0;
+
+	for(var x in Users) {
+		count += 1;
+	}
+
+	return count;
+
+}
 
 (function () {
-	var express = require('express'), q = require('q');
+	var express = require('express'), 
+	q = require('q'),
+	crypto = require('crypto');
 
 
 	function launchServer() {
@@ -23,7 +36,30 @@ var Users = [];
 
 
 		app.get('/users/:id', function (req, res) {
-			var user = Users[req.params.id - 1];
+			var user = Users[req.params.id];
+
+
+			if (user) {
+				res.writeHead(200, { 'Content-Type': 'application/json' });
+				res.write(JSON.stringify(user));
+			} else {
+				res.writeHead(404, { 'Content-Type': 'application/json' });
+			}
+
+
+			res.end();
+
+			
+		});
+
+
+		app.post('/users', function (req, res) {
+			var user = {
+				username:req.body.username,
+				id: NumUsers() + 1
+			};
+
+			Users[user.username] = user;
 
 			res.writeHead(200, { 'Content-Type': 'application/json' });
 			res.write(JSON.stringify(user));
@@ -31,18 +67,40 @@ var Users = [];
 		});
 
 
-		app.post('/users', function (req, res) {
-			var userId = Users.length + 1;
-			var user = {
-				name:req.body.name,
-				id:userId
-			};
+		app.post('/users/:username/login', function (req, res) {
+			var userId = req.params.username;
 
-			Users.push(user);
+			crypto.randomBytes(48, function(ex, buf) {
+				var user = Users[userId];
+				var token = buf.toString('hex');
+
+				user.token = token;
+
+
+				res.writeHead(200, { 'Content-Type': 'application/json' });
+				res.write(JSON.stringify({token:token}));
+				res.end();
+
+
+			});
+
+			
+
+
+		});
+
+
+		app.post('/users/:username/logout', function (req, res) {
+			var userId = req.params.username;
+			var user = Users[userId];
+			user.token = undefined;
+
 
 			res.writeHead(200, { 'Content-Type': 'application/json' });
 			res.write(JSON.stringify(user));
 			res.end()
+
+
 		});
 
 

@@ -22,10 +22,10 @@ define(
 
 				user.fetch()
 
-				.then(function () {
-					var controllerUserShow = new ControllerUserShow(user);
-					controllerUserShow.activate();
-				});
+					.then(function () {
+						var controllerUserShow = new ControllerUserShow(user);
+						controllerUserShow.activate();
+					});
 				
 			}
 

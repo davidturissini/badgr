@@ -13,6 +13,7 @@ define(
 		UserShowController = function (user) {
 			this._user = user;
 			this._viewUserDetail = new ViewUserDetail({
+				template:'/scripts/template/User/detail.mustache',
 				model:this._user
 			});
 		}
@@ -21,8 +22,13 @@ define(
 		UserShowController.prototype = {
 
 			activate: function () {
-				jQuery(document.body).addClass('user-show');
-				this._viewUserDetail.render();
+				document.body.id = 'user-show';
+				
+
+				return this._viewUserDetail.render()
+					.then(function (element) {
+						document.body.appendChild(element);
+					})
 			}
 
 		}

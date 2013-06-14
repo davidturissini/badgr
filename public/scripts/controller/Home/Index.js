@@ -5,11 +5,12 @@ define(
 		'jQuery',
 		'cookies',
 		'backbone',
-		'models/User',
-		'router/User'
+		'router/User',
+		'view/User/RegisterForm',
+		'models/User'
 	],
 
-	function (jQuery, cookies, Backbone, User, RouterUser) {
+	function (jQuery, cookies, Backbone, RouterUser, ViewUserRegisterForm, User) {
 		var IndexController;
 		var routerUser = new RouterUser();
 		
@@ -23,7 +24,7 @@ define(
 
 		function goToUserShow(user, indexController) {
 			indexController.deactivate();
-			routerUser.navigate('users/' + user.id, {trigger:true});
+			routerUser.navigate('users/' + user.get('username'), {trigger:true});
 		}
 
 
@@ -31,56 +32,55 @@ define(
 
 
 			deactivate: function () {
-				var formEl = document.getElementById('user-register-form');
-				formEl.parentNode.removeChild(formEl);
+				var formEl = jQuery('.user-register-form');
+				formEl.remove();
 			},
 
 
 			activate: function () {
 				var indexController = this;
-				
+				var viewUserRegisterForm = new ViewUserRegisterForm({
+					template:'/scripts/template/User/register_form.mustache'
+				});
 
 
 				jQuery(document).ready(function () {
-					var formEl = document.getElementById('user-register-form');
-					var userNameFieldEl = document.getElementById('user-register-form-name');
 					var userId = cookies.get('user_id');
 					var user;
-					
 
-					if (!userId) {
-						jQuery(formEl).on('submit', function (e) {
-							e.preventDefault();
+					document.body.id = 'home-index';
 
-							var user = User.create({
-								name:userNameFieldEl.value
-							});
-							
-							user.save()
 
-							.then(function () {
-								cookies.set('user_id', user.id);
+					viewUserRegisterForm.render()
 
-								goToUserShow(user, indexController);
-
-							});
-
+						.then(function (element) {
+							document.body.appendChild(element);
 						});
 
-					} else {
-						user = new User({id:userId});
+					viewUserRegisterForm.on('login:submit', function (evt) {
+						var userNameFieldEl = jQuery('.user-register-form-name', viewUserRegisterForm.element());
+						
 
-						user.fetch()
+						User.register({
+							username:userNameFieldEl.val()
+						})
 
-						.then(function () {
+						.then(function (user) {
+							return user.login();
+						})
+
+						.then(function (user) {
 							goToUserShow(user, indexController);
 						});
 
-						
 
-					}
+					});
+					
+					
 
 				});
+
+				
 			}
 
 

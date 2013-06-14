@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<title>Badgr prototype</title>
+		<link href="/styles/badgr.css" rel="stylesheet" type="text/css" />
 		<script src="/scripts/lib/require.js"></script>
 		<script>
 			require.config({
@@ -11,7 +12,8 @@
     				underscore: 'lib/underscore',
     				jQuery: 'lib/jQuery',
     				cookies: 'lib/cookies',
-    				mustache: 'lib/mustache'
+    				mustache: 'lib/mustache',
+    				q: 'lib/q'
 			    },
 			    shim: {
 				    'underscore': {
@@ -26,6 +28,9 @@
 				    },
 				    'cookies': {
 				    	exports:'jaaulde.utils.cookies'
+				    },
+				    'q': {
+				    	exports:'Q'
 				    }
 				}
 			})
@@ -43,12 +48,6 @@
 		</script>
 	</head>
 	<body>
-		<form id="user-register-form" class="user-register-form" action="/users" method="post">
-			<fieldset>
-				<legend>Who are you?</legend>
-				<input id="user-register-form-name" type="text" name="name" placeholder="Name" />
-				<input type="submit" />
-			</fieldset>
-		</form>
+		
 	</body>
 </html>
